@@ -4,14 +4,11 @@ PYTHON ?= python3
 SHA256 ?= sha256sum
 DOCS_OUTPUT := docs/contract-api.md
 
-.PHONY: build bindings all clean generate-api-docs check check-wasm-abi setup-githooks
-.PHONY: build bindings all clean generate-api-docs check setup-githooks benchmark-compare
+.PHONY: build bindings all clean generate-api-docs check check-wasm-abi validate-config benchmark-compare setup-githooks
 # macOS compatibility: check for shasum (pre-installed on macOS) and fall back to sha256sum.
 ifeq ($(shell uname -s),Darwin)
   SHA256 = shasum -a 256
 endif
-
-.PHONY: build bindings all clean generate-api-docs check setup-githooks
 
 all: build bindings
 
@@ -35,7 +32,7 @@ define stamp-binding
 			p.sourceCommit = '$$commit_hash'; \
 			require('fs').writeFileSync('$$pkg', JSON.stringify(p, null, 2) + '\n'); \
 		"; \
-		echo "  >> Stamped $$pkg: hash=$${contract_hash::12}… commit=$${commit_hash::12}…"; \
+		echo "  >> Stamped $$pkg: hash=$$(echo $$contract_hash | cut -c1-12)… commit=$$(echo $$commit_hash | cut -c1-12)…"; \
 	fi
 endef
 
